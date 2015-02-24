@@ -1,0 +1,28 @@
+a) Our first choice was to make the implementation of MovieBase and UserBaseboth in Vector based, taut implementation design. This was because we knew that by doing this, we could get any specific user or movie information in O(1) time. We originally considered doing it in terms of a binary search tree for the MovieBase and a FlexArray for the movie base, but since we had a static number of movies and users, which we could use as the size of vectors upon creation, we realized that it would be both easier and more efficient in terms of computation time for both creation and access to just use vectors.
+
+Next, we discovered that the best way to hold the genres of a movie was by bitstrings. Each place on a bitstring holds a literal bit in memory, so it is a very simple, small unit that takes up no more space than it needs to to signify whether or not a movie belongs to a genre. The use of this made it very easy for the users who rated the movie to go through and calculate whether they should factor in the rating for a movie into their average rating for a given genre. One other idea was that we could hold a vector of binary values true or false, or a variable and a getter method for each genre existence in a movie, but those would be more complex to write and take up more memory while still essentially doing the same thing. It was much easier to write genres[].test(0) than if(moviebase->at(m)->isGenre(0)...
+
+Our third decision on implementation was to have the files read from the client. Even though we could have had them read from the UserBase and MovieBase to allow them to populate themselves, we would have had to go through one or more files multiple times if we did this, reducing efficiency of the code. We used a seperate data parser that we coded, which increases the efficiency of the code even more, gives more seperation of duties in the parts of code, and makes our job in the client easier.
+
+Lastly, we decided to use the client to calculate preference rating for each genre and save it to the User object before iterating through movies to make recommendations. Originally, I (Bethany) misconceived how preference rating was supposed to work, thinking it was a function of average rating of a genre by the user divided by the average of ratings by the user overall. So we had a structure in place within the client class to hold genre preferences already, and once we realized our error in interpreting preference rating, we still believed that quality should be held by the user, and also thought that the user's holding of it would make later calculation of their reccomended movies much easier. We still could have done it all within the client through a special method that we would have to call once all ratings were added, but we would have had to give the userbase access to the moviebase, which was one thing we were trying to avoid having to do in our design. We only wanted each part to have access mostly to things that it created.
+
+b) Access of individual movies and users is O(1) time because of our taught implementation using vectors.
+
+Our time for creation of movies is O(M) and our time for creation of Users is O(U), since insertion of an object into a vector takes O(1) time. Movie creation is also Theta(M) and creation of users is Theta(U).
+
+The estimated amount of time that would be required for determining the ratings for all users would be O(R). We give each rating to the user it belongs to and the movie it belongs to. The amount of time that would take would be at worst, or Theta(MU). This is because the worst case scenario is if every user in the userbase rated every movie in the moviebase, so we would have to go to the userbase once for every movie and the moviebase once for every user.
+
+Our calculations for determining preference rating for each user would also be O(R) time and at worst Theta(MU) time. We check every movie rated by each user to determine the user's rating and the genres to which that movie belongs. If all users rate all movies, then we have to go through each movie for each user.
+
+Determining the top reccomendations must go through each user once for each movie, in order to determine what the "desired" (prefRating for genre*Rating of movie) was. We also iterated through each genre for the movie to determine which would give a higher pref rating for the user and iterated through a vector of a given size to determine what ranking the movie had for the user at the time it was encountered. This vector is of the size of the number of reccomendations desired. Since the number of genres and the size of the vector are constants, they do not affect the running time notation. Since we will always run through U M times no matter what, O equals Theta. O(MU) Theta(MU).
+
+Finally, for the printing out of reccomendations, we iterate through all the users, iteration through the vector of their top rated movies and printing them out. The vector of top rated movies is a constant based on what the runner of the program desired and is not factored into the time efficiency. So then our time efficiency is just the number of users, with O and Theta equal. O(U) Theta(U).
+
+Our overall efficiency would technically be:
+O(1)+O(M)+O(U)+O(R)+O(MU)+O(U)
+Theta(M)+Theta(U)+Theta(MU)+Theta(MU)+Theta(MU)+Theta(U)
+or 
+Theta(M)+2Theta(U)+3Theta(MU)
+Since the overall efficiency is just the combination of efficiencies added together, and we get rid of all but the largest terms, including constant multiples, we get efficiency of:
+O(MU)
+Theta(MU)
